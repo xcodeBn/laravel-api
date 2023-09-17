@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Models\Invoice;
-use App\Http\Requests\StoreInvoiceRequest;
-use App\Http\Requests\UpdateInvoiceRequest;
+use App\Http\Requests\v1\StoreInvoiceRequest;
+use App\Http\Requests\v1\UpdateInvoiceRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\v1\InvoiceResource;
 use App\Http\Resources\v1\InvoiceCollection;
+use App\Filters\v1\InvoicesFilter;
+use Illuminate\Http\Request;
+
 class InvoiceController extends Controller
 {
     /**
@@ -15,11 +18,21 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
 
-        return new InvoiceCollection(Invoice::paginate());
+        $pages = 20;
+
+        $filter = new InvoicesFilter();
+        $queryItems = $filter->transform($request); //['column','operator','value']
+
+        if (count($queryItems) == 0) {
+            return new InvoiceCollection(Invoice::paginate($pages));
+        } else {
+            $invoices = Invoice::where($queryItems)->paginate($pages);
+            return new InvoiceCollection($invoices->appends($request->query()));
+        }
     }
 
     /**
