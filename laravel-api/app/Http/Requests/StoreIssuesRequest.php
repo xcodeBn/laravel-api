@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\v1;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateInvoiceRequest extends FormRequest
+class StoreIssuesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,9 +13,7 @@ class UpdateInvoiceRequest extends FormRequest
      */
     public function authorize()
     {
-        $user = $this->user();
-
-        return $user != null && $user->tokenCan('update');
+        return false;
     }
 
     /**
@@ -28,14 +26,5 @@ class UpdateInvoiceRequest extends FormRequest
         return [
             //
         ];
-    }
-
-    public function prepareForValidaiton()
-    {
-        return $this->merge([
-            'billed_date' => $this->billedDate,
-            'paid_date' => $this->paidDate,
-            'customer_id' => $this->customerId,
-        ]);
     }
 }

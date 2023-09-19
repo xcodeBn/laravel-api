@@ -67,6 +67,10 @@ class CustomerController extends Controller
     }
 
 
+    public function bulkStore(Request $request)
+    {
+    }
+
 
     /**
      * Update the specified resource in storage.
